@@ -1,3 +1,4 @@
+// biome-ignore lint: no-unused-vars
 export type AnyType = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 export type NestedPartial<T> = {
@@ -10,9 +11,9 @@ export type Join<K, P> = K extends string | number
     : never
   : never;
 
-export type Prev = [never, 0, 1, 2, 3];
+export type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7];
 
-export type Paths<T, D extends number = 2> = [D] extends [never]
+export type Paths<T, D extends number = 7> = [D] extends [never]
   ? never
   : T extends object
     ? {
