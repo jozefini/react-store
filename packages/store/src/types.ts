@@ -11,30 +11,28 @@ export type Join<K, P> = K extends string | number
     : never
   : never;
 
-export type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7];
+export type Prev = [never, 0, 1, 2, 3, 4, 5];
 
-export type Paths<T, D extends number = 7> = [D] extends [never]
-  ? never
+export type Paths<T, D extends number = 5> = [D] extends [never]
+  ? string
   : T extends object
     ? {
         [K in keyof T]-?: K extends string | number
           ? `${K}` | Join<K, Paths<T[K], Prev[D]>>
           : never;
       }[keyof T]
-    : '';
+    : string;
 
-export type PathValue<
-  T,
+export type PathValue<T, P extends string> =
   P extends Paths<T>
-> = P extends `${infer Key}.${infer Rest}`
-  ? Key extends keyof T
-    ? Rest extends Paths<T[Key]>
-      ? PathValue<T[Key], Rest>
-      : never
-    : never
-  : P extends keyof T
-    ? T[P]
-    : never;
+    ? P extends `${infer Key}.${infer Rest}`
+      ? Key extends keyof T
+        ? PathValue<T[Key], Rest>
+        : unknown
+      : P extends keyof T
+        ? T[P]
+        : unknown
+    : unknown;
 
 export type DevToolsConnection = {
   init: (state: AnyType) => void;
