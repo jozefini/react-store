@@ -386,6 +386,7 @@ export function createStore<T>(props: CreateStoreProps<T>) {
 export function createScopedStore<T>(props: CreateStoreProps<T>) {
   const StoreContext = createContext<CreateStore<T> | null>(null);
   const Provider: FC<{ children: React.ReactNode }> = ({ children }) => {
+    // biome-ignore lint: react-hooks/exhaustive-deps
     const store = useMemo(() => new CreateStore<T>(props), []);
     return (
       <StoreContext.Provider value={store}>{children}</StoreContext.Provider>

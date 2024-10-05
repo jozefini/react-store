@@ -499,6 +499,7 @@ export function createMapStore<T>(props: CreateMapStoreProps<T>) {
 export function createScopedMapStore<T>(props: CreateMapStoreProps<T>) {
   const StoreContext = createContext<CreateMapStore<T> | null>(null);
   const Provider: FC<{ children: React.ReactNode }> = ({ children }) => {
+    // biome-ignore lint: react-hooks/exhaustive-deps
     const store = useMemo(() => new CreateMapStore<T>(props), []);
     return (
       <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
