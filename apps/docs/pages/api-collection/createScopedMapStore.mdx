@@ -5,7 +5,7 @@ The `createScopedMapStore` function creates a new scoped Map store instance with
 ```typescript
 function createScopedMapStore<T>(props: ConstructorProps<T>): {
   Provider: FC<{ children: React.ReactNode }>;
-  useStore: () => MapStoreInstance<T>;
+  useStore: () => MapStore<T>;
 };
 ```
 

@@ -12,5 +12,5 @@
   "useSize": "useSize()",
   "reset": "reset()",
   "clear": "clear()",
-  "MapStoreInstance": "MapStoreInstance"
+  "MapStore": "MapStore"
 }

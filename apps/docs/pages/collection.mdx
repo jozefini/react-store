@@ -58,7 +58,7 @@ npm install @devlab/store
   </Tabs.Tab>
   <Tabs.Tab>
     ```tsx copy
-    import { createScopedMapStore, type MapStoreInstance } from '@devlab/store'
+    import { createScopedMapStore, type MapStore } from '@devlab/store'
 
     type UserData = {
       name: string;
@@ -87,7 +87,7 @@ npm install @devlab/store
         store
       }: {
         userId: string,
-        store: MapStoreInstance<UserData>
+        store: MapStore<UserData>
       }) {
       const name = store.key(userId).use('name') // As component prop
       const job = useStore().key(userId).use('job') // Imported from store instance

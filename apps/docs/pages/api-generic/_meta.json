@@ -7,5 +7,5 @@
   "remove": "remove()",
   "reset": "reset()",
   "use": "use()",
-  "StoreInstance": "StoreInstance"
+  "Store": "Store"
 }

@@ -5,7 +5,7 @@ The `createScopedStore` function creates a new scoped store instance with a Reac
 ```typescript
 function createScopedStore<T>(props: ConstructorProps<T>): {
   Provider: FC<{ children: React.ReactNode }>;
-  useStore: () => StoreInstance<T>;
+  useStore: () => Store<T>;
 };
 ```
 

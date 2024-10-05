@@ -1,0 +1,70 @@
+## MapStore
+
+`MapStore` is a type that represents an instance of the Map store created by either `createMapStore` or `createScopedMapStore`.
+
+```typescript
+export type MapStore<T> = CreateMapStore<T>;
+```
+
+## Description
+
+The `MapStore` type encapsulates all the methods and properties available on a Map store instance. It's a generic type that takes the shape of your store data as its type parameter.
+
+## Properties and Methods
+
+A `MapStore<T>` includes the following methods:
+
+- `key(mapKey: string)`: Returns an object with methods to interact with a specific key in the Map store.
+  - `set(value: T, notify?: boolean): void`
+  - `get<P extends Paths<T>>(path?: P): PathValue<T, P>`
+  - `update<P extends Paths<T>>(path: P, value: PathValue<T, P> | ((prev: PathValue<T, P>) => PathValue<T, P>), notify?: boolean): void`
+  - `remove(notify?: boolean): void`
+  - `use<P extends Paths<T>>(path?: P): PathValue<T, P>`
+- `getKeys(): string[]`
+- `getSize(): number`
+- `useKeys(): string[]`
+- `useSize(): number`
+- `reset(notify?: boolean): void`
+- `clear(notify?: boolean): void`
+
+## Usage
+
+The `MapStore` type is primarily used when you need to type a variable or parameter as a Map store instance. This is particularly useful in TypeScript to ensure type safety when working with store instances.
+
+### Example
+
+```typescript
+import { MapStore, createMapStore } from '@devlab/store';
+
+type UserData = {
+  name: string;
+  age: number;
+};
+
+const userStore = createMapStore<UserData>({
+  initialData: new Map([
+    ['user1', { name: 'John Doe', age: 30 }]
+  ])
+});
+
+function updateUserName(store: MapStore<UserData>, userId: string, newName: string) {
+  store.key(userId).update('name', newName);
+}
+
+updateUserName(userStore, 'user1', 'Jane Doe');
+
+// In a React component
+function UserProfile({ store, userId }: { store: MapStore<UserData>, userId: string }) {
+  const name = store.key(userId).use('name');
+  const age = store.key(userId).use('age');
+
+  return (
+    <div>
+      <p>Name: {name}</p>
+      <p>Age: {age}</p>
+    </div>
+  );
+}
+```
+
+In this example, we use `MapStore<UserData>` to type the `store` parameter in the `updateUserName` function and the `store` prop in the `UserProfile` component. This ensures that we're using the correct store instance with the expected shape and methods.

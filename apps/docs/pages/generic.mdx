@@ -41,7 +41,7 @@ npm install @devlab/store
   </Tabs.Tab>
   <Tabs.Tab>
     ```tsx copy
-    import { createScopedStore, type StoreInstance } from '@devlab/store'
+    import { createScopedStore, type Store } from '@devlab/store'
 
     type UserData = {
       name: string;
@@ -62,7 +62,7 @@ npm install @devlab/store
       )
     }
 
-    export function UserProfile({ store }: { store: StoreInstance<UserData> }) {
+    export function UserProfile({ store }: { store: Store<UserData> }) {
       const name = store.use('name') // As component prop
       const job = useStore().use('job') // Imported from store instance
 

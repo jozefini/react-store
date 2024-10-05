@@ -1,0 +1,69 @@
+## Store
+
+`Store` is a type that represents an instance of the store created by either `createStore` or `createScopedStore`.
+
+```typescript
+export type Store<T> = CreateStore<T>;
+```
+
+## Description
+
+The `Store` type encapsulates all the methods and properties available on a store instance. It's a generic type that takes the shape of your store data as its type parameter.
+
+## Properties and Methods
+
+A `Store<T>` includes the following methods:
+
+- `set<P extends Paths<T>>(path: P & string, value: PathValue<T, P>, notify?: boolean): void`
+- `get<P extends Paths<T>>(path: P & string): PathValue<T, P>`
+- `update<P extends Paths<T>>(path: P & string, value: PathValue<T, P> | ((prev: PathValue<T, P>) => PathValue<T, P>), notify?: boolean): void`
+- `remove<P extends Paths<T>>(path: P & string, notify?: boolean): void`
+- `reset(notify?: boolean): void`
+- `use<P extends Paths<T>>(path: P & string): PathValue<T, P>`
+
+## Usage
+
+The `Store` type is primarily used when you need to type a variable or parameter as a store instance. This is particularly useful in TypeScript to ensure type safety when working with store instances.
+
+### Example
+
+```typescript
+import { Store, createStore } from '@devlab/store';
+
+type UserStore = {
+  user: {
+    name: string;
+    age: number;
+  };
+};
+
+const userStore = createStore<UserStore>({
+  initialData: {
+    user: {
+      name: 'John Doe',
+      age: 30
+    }
+  }
+});
+
+function updateUserName(store: Store<UserStore>, newName: string) {
+  store.set('user.name', newName);
+}
+
+updateUserName(userStore, 'Jane Doe');
+
+// In a React component
+function UserProfile({ store }: { store: Store<UserStore> }) {
+  const name = store.use('user.name');
+  const age = store.use('user.age');
+
+  return (
+    <div>
+      <p>Name: {name}</p>
+      <p>Age: {age}</p>
+    </div>
+  );
+}
+```
+
+In this example, we use `Store<UserStore>` to type the `store` parameter in the `updateUserName` function and the `store` prop in the `UserProfile` component. This ensures that we're using the correct store instance with the expected shape and methods.
