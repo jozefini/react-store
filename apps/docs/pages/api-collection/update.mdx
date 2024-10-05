@@ -1,0 +1,77 @@
+## update
+
+The `update` method for the Map store allows you to modify an existing value for a specific key in the store.
+
+```typescript
+key(mapKey: string).update<P extends Paths<T>>(
+  path: P,
+  value: PathValue<T, P> | ((prev: PathValue<T, P>) => PathValue<T, P>),
+  notify: boolean = true
+): void
+```
+
+## Parameters
+
+| Option | Type                                                              | Required | Description                                                                                            |
+| :----- | :---------------------------------------------------------------- | :------- | :----------------------------------------------------------------------------------------------------- |
+| mapKey | `string`                                                          | Yes      | The key in the Map store for which to update the value.                                                |
+| path   | `string`                                                          | Yes      | The property path to update. Can be nested using dot notation (e.g., 'preferences.theme').             |
+| value  | `PathValue<T, P> \| ((prev: PathValue<T, P>) => PathValue<T, P>)` | Yes      | The new value to set or a function that receives the previous value and returns the new value.         |
+| notify | `boolean`                                                         | No       | Whether to trigger a re-render for components subscribed to this key in the store. Defaults to `true`. |
+
+## Returns
+
+`void`
+
+## Description
+
+The `update` method modifies an existing value for a specific key in the Map store. It's accessed through the `key` method of the store. Unlike `set`, `update` allows you to modify nested properties without overwriting the entire value.
+
+**Important Note:** If the key doesn't exist in the store, `update` will not create it. Use `set` if you want to ensure the key is created.
+
+## Example
+
+```typescript
+import { createMapStore } from '@devlab/store';
+
+type UserData = {
+  name: string;
+  age: number;
+  preferences: {
+    theme: 'light' | 'dark';
+  };
+};
+
+const userStore = createMapStore<UserData>({
+  initialData: new Map([
+    ['user1', { name: 'John Doe', age: 30, preferences: { theme: 'light' } }]
+  ])
+});
+
+// Update a simple property
+userStore.key('user1').update('name', 'Jane Doe');
+
+// Update using a function
+userStore.key('user1').update('age', (prevAge) => prevAge + 1);
+
+// Update a nested property
+userStore.key('user1').update('preferences.theme', 'dark');
+
+// Usage in a React component
+function UserProfile({ userId }: { userId: string }) {
+  const userData = userStore.key(userId).use();
+
+  return (
+    <div>
+      <p>Name: {userData.name}</p>
+      <p>Age: {userData.age}</p>
+      <p>Theme: {userData.preferences.theme}</p>
+      <button onClick={() => userStore.key(userId).update('age', (age) => age + 1)}>
+        Increment Age
+      </button>
+    </div>
+  );
+}
+```
+
+This example demonstrates how to use the `update` method to modify existing values in the Map store, including using a function to update based on the previous value, as well as how to use it within a React component.

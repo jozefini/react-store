@@ -1,0 +1,69 @@
+## clear
+
+The `clear` method removes all key-value pairs from the Map store.
+
+```typescript
+clear(notify: boolean = true): void
+```
+
+## Parameters
+
+| Option | Type      | Required | Description                                                                               |
+| :----- | :-------- | :------- | :---------------------------------------------------------------------------------------- |
+| notify | `boolean` | No       | Whether to trigger re-renders for components subscribed to the store. Defaults to `true`. |
+
+## Returns
+
+`void`
+
+## Description
+
+The `clear` method removes all key-value pairs from the Map store, effectively emptying it. If `notify` is true (default), it will trigger re-renders in all components that are subscribed to any part of the store.
+
+## Example
+
+```typescript
+import React from 'react';
+import { createMapStore } from '@devlab/store';
+
+type UserData = {
+  name: string;
+  age: number;
+};
+
+const userStore = createMapStore<UserData>({
+  initialData: new Map([
+    ['user1', { name: 'John Doe', age: 30 }],
+    ['user2', { name: 'Jane Doe', age: 28 }]
+  ])
+});
+
+function UserManager() {
+  const users = userStore.useKeys().map(key => userStore.key(key).use());
+
+  return (
+    <div>
+      <h2>Users: {users.length}</h2>
+      <ul>
+        {users.map((user, index) => (
+          <li key={index}>{user.name}, {user.age} years old</li>
+        ))}
+      </ul>
+      <button onClick={() => userStore.key(`user${users.length + 1}`).set({ name: 'New User', age: 25 })}>
+        Add User
+      </button>
+      <button onClick={() => userStore.clear()}>
+        Clear All Users
+      </button>
+    </div>
+  );
+}
+```
+
+This example demonstrates how to use the `clear` method to remove all users from the Map store, resulting in an empty store.
+
+## Notes
+
+- The `clear` method removes all key-value pairs, including those that were part of the initial state.
+- After calling `clear`, the store will be completely empty, regardless of its initial state.
+- If you want to restore the store to its initial state instead of clearing it completely, use the `reset` method.

@@ -1,0 +1,81 @@
+import { Steps, Tabs } from 'nextra-theme-docs';
+
+# Setup
+
+<Steps>
+### Install package
+
+```bash copy npm2yarn
+npm install @devlab/store
+```
+
+### Usage
+
+<Tabs items={["Global", "Scoped"]}>
+  <Tabs.Tab>
+    ```tsx copy
+    import { createStore } from '@devlab/store'
+
+    type UserData = {
+      name: string;
+      job?: string;
+    }
+
+    const userStore = createStore<UserData>({
+      devtools: "User Store",
+      initialData: { name: 'John' },
+      fallbackData: { name: "Guest", job: "Unemployed" }
+    })
+
+    export function UserProfile() {
+      const name = userStore.use('name');
+
+      return (
+        <div>
+          <h1>{name}</h1>
+        </div>
+      )
+    }
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```tsx copy
+    import { createScopedStore, type StoreInstance } from '@devlab/store'
+
+    type UserData = {
+      name: string;
+      job?: string;
+    }
+
+    const { Provider, useStore } = createScopedStore<UserData>({
+      devtools: "Scoped Store",
+      initialData: { name: 'John' },
+      fallbackData: { name: "Guest", job: "Unemployed" }
+    })
+
+    export function App() {
+      return (
+        <Provider>
+          <UserProfile store={useStore} />
+        </Provider>
+      )
+    }
+
+    export function UserProfile({ store }: { store: StoreInstance<UserData> }) {
+      const name = store.use('name') // As component prop
+      const job = useStore().use('job') // Imported from store instance
+
+      return (
+        <div>
+          <h1>{name}</h1>
+          <p>{job}</p>
+        </div>
+      )
+    }
+    ```
+
+  </Tabs.Tab>
+</Tabs>
+
+</Steps>

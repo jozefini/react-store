@@ -1,0 +1,97 @@
+## set
+
+The `set` method for the Map store allows you to update or create a value for a specific key in the store.
+
+```typescript
+key(mapKey: string).set(value: T, notify: boolean = true): void
+```
+
+## Parameters
+
+| Option | Type      | Required | Description                                                                                            |
+| :----- | :-------- | :------- | :----------------------------------------------------------------------------------------------------- |
+| mapKey | `string`  | Yes      | The key in the Map store for which to set the value.                                                   |
+| value  | `T`       | Yes      | The value to set for the specified key. This should match the structure defined for each item.         |
+| notify | `boolean` | No       | Whether to trigger a re-render for components subscribed to this key in the store. Defaults to `true`. |
+
+## Returns
+
+`void`
+
+## Description
+
+The `set` method updates or creates a value for a specific key in the Map store. It's accessed through the `key` method of the store, which allows you to specify the key you want to operate on. This design is particularly useful for stores where you have a repeating structure for each item.
+
+**Important Note:** If the key doesn't exist in the store, `set` will create it. If it does exist, it will overwrite the entire value for that key.
+
+## Example
+
+```typescript
+import { createMapStore } from '@devlab/store';
+
+type UserData = {
+  name: string;
+  age: number;
+  preferences: {
+    theme: 'light' | 'dark';
+  };
+};
+
+const userStore = createMapStore<UserData>({
+  initialData: new Map([
+    ['user1', { name: 'John Doe', age: 30, preferences: { theme: 'light' } }]
+  ])
+});
+
+// Set a new user
+userStore.key('user2').set({
+  name: 'Jane Doe',
+  age: 28,
+  preferences: { theme: 'dark' }
+});
+
+// Update an existing user
+userStore.key('user1').set({
+  name: 'John Smith',
+  age: 31,
+  preferences: { theme: 'light' }
+});
+
+// Set without notifying subscribers
+userStore.key('user3').set({
+  name: 'Alice Johnson',
+  age: 35,
+  preferences: { theme: 'light' }
+}, false);
+
+// Usage in a React component
+function UserProfile({ userId }: { userId: string }) {
+  const userData = userStore.key(userId).use();
+
+  return (
+    <div>
+      <p>Name: {userData.name}</p>
+      <p>Age: {userData.age}</p>
+      <p>Theme: {userData.preferences.theme}</p>
+      <button onClick={() => userStore.key(userId).set({
+        ...userData,
+        age: userData.age + 1
+      })}>
+        Increment Age
+      </button>
+    </div>
+  );
+}
+```
+
+This example demonstrates how to use the `set` method to add new users and update existing ones in the Map store, as well as how to use it within a React component.
+
+## Differences from Object Store
+
+Unlike the object store's `set` method, the Map store's `set` method:
+
+1. Operates on a specific key in the Map, rather than a nested path.
+2. Replaces the entire value for a key, rather than updating nested properties individually.
+3. Is accessed through the `key` method, which provides a fluent interface for working with specific Map entries.
+
+These differences make the Map store particularly suitable for collections of items with a consistent structure, where each item is identified by a unique key.

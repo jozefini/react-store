@@ -1,0 +1,87 @@
+## get
+
+The `get` method allows you to retrieve a value from the store at a specified path.
+
+```typescript
+get<P extends Paths<T>>(path: P & string): PathValue<T, P>
+```
+
+## Parameters
+
+| Option | Type     | Required | Description                                                                                   |
+| :----- | :------- | :------- | :-------------------------------------------------------------------------------------------- |
+| path   | `string` | Yes      | The property path in the store. Can be nested using dot notation (e.g., 'user.profile.name'). |
+
+## Returns
+
+`PathValue<T, P>`: The value at the specified path.
+
+## Description
+
+The `get` method retrieves the value from the store's state at the specified path. If the value doesn't exist in the main data, it will attempt to retrieve it from the fallback data.
+
+## Example
+
+```typescript
+import { createStore } from '@devlab/store';
+
+type StoreStates = {
+  user: {
+    name: string;
+    preferences: {
+      theme: 'light' | 'dark';
+    };
+    age?: number;
+  };
+}
+
+// Create a store
+const store = createStore<StoreStates>({
+  initialData: {
+    user: {
+      name: 'John Doe',
+      preferences: {
+        theme: 'light'
+      }
+    }
+  },
+  fallbackData: {
+    user: {
+      name: 'Guest',
+      preferences: {
+        theme: 'light'
+      }
+    }
+  }
+});
+
+// Get a simple value
+const userName = store.get('user.name');
+console.log(userName); // 'John Doe'
+
+// Get a nested value
+const theme = store.get('user.preferences.theme');
+console.log(theme); // 'light'
+
+// Get a non-existent value (falls back to fallbackData)
+const age = store.get('user.age');
+console.log(age); // undefined
+
+// Usage in a React component
+function UserProfile() {
+  const userName = store.use('user.name');
+  const theme = store.use('user.preferences.theme');
+
+  return (
+    <div>
+      <p>Name: {userName}</p>
+      <p>Theme: {theme}</p>
+      <button onClick={() => console.log(store.get('user.name'))}>
+        Log Name
+      </button>
+    </div>
+  );
+}
+```
+
+This example demonstrates how to use the `get` method to retrieve both existing and non-existent values from the store, as well as how to use it within a React component.

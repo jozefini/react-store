@@ -1,0 +1,53 @@
+## getKeys
+
+The `getKeys` method returns an array of all keys in the Map store.
+
+```typescript
+getKeys(): string[]
+```
+
+## Parameters
+
+None
+
+## Returns
+
+`string[]`: An array of all keys in the Map store.
+
+## Description
+
+The `getKeys` method retrieves all keys currently present in the Map store. This can be useful for iterating over all items in the store or checking if a specific key exists.
+
+## Example
+
+```typescript
+import { createMapStore } from '@devlab/store';
+
+type UserData = {
+  name: string;
+  age: number;
+};
+
+const userStore = createMapStore<UserData>({
+  initialData: new Map([
+    ['user1', { name: 'John Doe', age: 30 }],
+    ['user2', { name: 'Jane Doe', age: 28 }]
+  ])
+});
+
+// Get all keys
+const allKeys = userStore.getKeys();
+console.log(allKeys); // ['user1', 'user2']
+
+// Check if a key exists
+const hasUser3 = userStore.getKeys().includes('user3');
+console.log(hasUser3); // false
+
+// Iterate over all users
+userStore.getKeys().forEach((userId) => {
+  const userData = userStore.key(userId).get();
+  console.log(`${userId}: ${userData.name}, ${userData.age} years old`);
+});
+```
+
+This example demonstrates how to use the `getKeys` method to retrieve all keys, check for the existence of a key, and iterate over all items in the Map store.

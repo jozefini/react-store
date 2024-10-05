@@ -1,0 +1,66 @@
+## useKeys
+
+The `useKeys` method is a React hook that subscribes to changes in the keys of the Map store.
+
+```typescript
+useKeys(): string[]
+```
+
+## Parameters
+
+None
+
+## Returns
+
+`string[]`: An array of all keys in the Map store.
+
+## Description
+
+The `useKeys` method is a React hook that returns an array of all keys in the Map store and automatically re-renders the component when keys are added or removed from the store.
+
+## Example
+
+```typescript
+import React from 'react';
+import { createMapStore } from '@devlab/store';
+
+type UserData = {
+  name: string;
+  age: number;
+};
+
+const userStore = createMapStore<UserData>({
+  initialData: new Map([
+    ['user1', { name: 'John Doe', age: 30 }],
+    ['user2', { name: 'Jane Doe', age: 28 }]
+  ])
+});
+
+function UserList() {
+  const userIds = userStore.useKeys();
+
+  return (
+    <div>
+      <h2>Users:</h2>
+      <ul>
+        {userIds.map(userId => (
+          <li key={userId}>
+            {userStore.key(userId).get('name')} (ID: {userId})
+          </li>
+        ))}
+      </ul>
+      <button onClick={() => userStore.key(`user${userIds.length + 1}`).set({ name: 'New User', age: 25 })}>
+        Add User
+      </button>
+    </div>
+  );
+}
+```
+
+This example demonstrates how to use the `useKeys` hook to render a list of users that automatically updates when users are added or removed from the store.
+
+## Notes
+
+- The `useKeys` hook follows the rules of hooks and should only be used at the top level of your React function components or custom hooks.
+- The component using `useKeys` will re-render whenever keys are added to or removed from the Map store.
+- This hook is particularly useful for rendering lists or menus based on the current keys in the store.

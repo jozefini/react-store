@@ -1,0 +1,79 @@
+## remove
+
+The `remove` method for the Map store allows you to delete a key-value pair from the store.
+
+```typescript
+key(mapKey: string).remove(notify: boolean = true): void
+```
+
+## Parameters
+
+| Option | Type      | Required | Description                                                                                            |
+| :----- | :-------- | :------- | :----------------------------------------------------------------------------------------------------- |
+| mapKey | `string`  | Yes      | The key in the Map store to remove.                                                                    |
+| notify | `boolean` | No       | Whether to trigger a re-render for components subscribed to this key in the store. Defaults to `true`. |
+
+## Returns
+
+`void`
+
+## Description
+
+The `remove` method deletes a key-value pair from the Map store. It's accessed through the `key` method of the store. After removal, any attempts to access the removed key will return `undefined` or fall back to the `fallbackData` if provided.
+
+## Example
+
+```typescript
+import { createMapStore } from '@devlab/store';
+
+type UserData = {
+  name: string;
+  age: number;
+  preferences: {
+    theme: 'light' | 'dark';
+  };
+};
+
+const userStore = createMapStore<UserData>({
+  initialData: new Map([
+    ['user1', { name: 'John Doe', age: 30, preferences: { theme: 'light' } }],
+    ['user2', { name: 'Jane Doe', age: 28, preferences: { theme: 'dark' } }]
+  ])
+});
+
+// Remove a user
+userStore.key('user2').remove();
+
+console.log(userStore.key('user2').get()); // undefined
+
+// Usage in a React component
+function UserList() {
+  const userKeys = userStore.useKeys();
+
+  return (
+    <div>
+      <h2>Users:</h2>
+      {userKeys.map(userId => (
+        <div key={userId}>
+          <span>{userStore.key(userId).get('name')}</span>
+          <button onClick={() => userStore.key(userId).remove()}>
+            Remove User
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+This example demonstrates how to use the `remove` method to delete key-value pairs from the Map store, as well as how to use it within a React component.
+
+## Differences from Object Store
+
+Unlike the object store's `remove` method, the Map store's `remove` method:
+
+1. Removes an entire key-value pair from the Map, rather than a nested property.
+2. Is accessed through the `key` method, which provides a fluent interface for working with specific Map entries.
+3. Affects the size of the Map store, which can be observed using the `useSize` hook.
+
+These differences make the Map store's `remove` method particularly suitable for managing collections of items where you need to add or remove entire items frequently.

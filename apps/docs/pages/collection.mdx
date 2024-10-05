@@ -1,0 +1,106 @@
+import { Steps, Tabs } from 'nextra-theme-docs';
+
+# Setup
+
+<Steps>
+### Install package
+
+```bash copy npm2yarn
+npm install @devlab/store
+```
+
+### Usage
+
+<Tabs items={["Global", "Scoped"]}>
+  <Tabs.Tab>
+    ```tsx copy
+    import { createMapStore } from '@devlab/store'
+
+    type UserData = {
+      name: string;
+      job?: string;
+    }
+
+    const usersStore = createMapStore<UserData>({
+      devtools: "Users Store",
+      initialData: new Map([
+        ['john', { name: 'John' }],
+        ['jane', { name: 'Jane', job: 'Developer' }]
+      ]),
+      fallbackData: { name: "Guest", job: "Unemployed" }
+    })
+
+    export function App() {
+      const totalUsers = usersStore.useSize()
+      const usersIds = usersStore.useKeys()
+
+      return (
+        <div>
+          <h1>Total Users: {totalUsers}</h1>
+          <div>Users: {usersIds.join(', ')}</div>
+
+          <UserProfile userId="john" />
+        </div>
+      )
+    }
+
+    export function UserProfile({ userId }) {
+      const name = usersStore.key(userId).use('name')
+
+      return (
+        <div>
+          <h1>{name}</h1>
+        </div>
+      )
+    }
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```tsx copy
+    import { createScopedMapStore, type MapStoreInstance } from '@devlab/store'
+
+    type UserData = {
+      name: string;
+      job?: string;
+    }
+
+    const { Provider, useStore } = createScopedMapStore<UserData>({
+      devtools: "Scoped Store",
+      initialData: new Map([
+        ['john', { name: 'John' }],
+        ['jane', { name: 'Jane', job: 'Developer' }]
+      ]),
+      fallbackData: { name: "Guest", job: "Unemployed" }
+    })
+
+    export function App() {
+      return (
+        <Provider>
+          <UserProfile userId="john" store={useStore} />
+        </Provider>
+      )
+    }
+
+    export function UserProfile({
+        userId,
+        store
+      }: {
+        userId: string,
+        store: MapStoreInstance<UserData>
+      }) {
+      const name = store.key(userId).use('name') // As component prop
+      const job = useStore().key(userId).use('job') // Imported from store instance
+
+      return (
+        <div>
+          <h1>{name}</h1>
+        </div>
+      )
+    }
+    ```
+
+  </Tabs.Tab>
+</Tabs>
+
+</Steps>

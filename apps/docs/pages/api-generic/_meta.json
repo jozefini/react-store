@@ -1,0 +1,11 @@
+{
+  "createStore": "createStore()",
+  "createScopedStore": "createScopedStore()",
+  "set": "set()",
+  "get": "get()",
+  "update": "update()",
+  "remove": "remove()",
+  "reset": "reset()",
+  "use": "use()",
+  "StoreInstance": "StoreInstance"
+}

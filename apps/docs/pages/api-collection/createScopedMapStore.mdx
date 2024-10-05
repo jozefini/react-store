@@ -1,0 +1,82 @@
+## createScopedMapStore
+
+The `createScopedMapStore` function creates a new scoped Map store instance with a React context provider.
+
+```typescript
+function createScopedMapStore<T>(props: ConstructorProps<T>): {
+  Provider: FC<{ children: React.ReactNode }>;
+  useStore: () => MapStoreInstance<T>;
+};
+```
+
+## Parameters
+
+| Option | Type                  | Required | Description                          |
+| :----- | :-------------------- | :------- | :----------------------------------- |
+| props  | `ConstructorProps<T>` | Yes      | Configuration options for the store. |
+
+### ConstructorProps\<T>
+
+| Option       | Type               | Required | Description                                                                 |
+| :----------- | :----------------- | :------- | :-------------------------------------------------------------------------- |
+| initialData  | `Map<string, T>`   | No       | The initial data for the store.                                             |
+| fallbackData | `NestedPartial<T>` | No       | Fallback data used when a value is not found in the main data.              |
+| devTools     | `string`           | No       | Name for Redux DevTools integration. If provided, enables DevTools support. |
+
+## Returns
+
+An object with two properties:
+
+- `Provider`: A React component that provides the store context to its children.
+- `useStore`: A hook that returns the store instance within the context.
+
+## Description
+
+The `createScopedMapStore` function creates a new scoped Map store instance that can be used within a specific part of your React component tree. It provides a context provider and a hook to access the store instance.
+
+## Example
+
+```typescript
+import React from 'react';
+import { createScopedMapStore } from '@devlab/store';
+
+type UserData = {
+  name: string;
+  age: number;
+};
+
+const { Provider, useStore } = createScopedMapStore<UserData>({
+  initialData: new Map([
+    ['user1', { name: 'John Doe', age: 30 }],
+    ['user2', { name: 'Jane Doe', age: 28 }]
+  ])
+});
+
+function UserProfile({ userId }: { userId: string }) {
+  const store = useStore();
+  const name = store.key(userId).use('name');
+  const age = store.key(userId).use('age');
+
+  return (
+    <div>
+      <p>Name: {name}</p>
+      <p>Age: {age}</p>
+      <button onClick={() => store.key(userId).update('age', age => age + 1)}>
+        Increment Age
+      </button>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Provider>
+      <h1>User Profiles</h1>
+      <UserProfile userId="user1" />
+      <UserProfile userId="user2" />
+    </Provider>
+  );
+}
+```
+
+This example demonstrates how to create a scoped Map store, provide it to a part of your component tree, and use it within React components.

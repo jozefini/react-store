@@ -1,0 +1,87 @@
+## createStore
+
+The `createStore` function creates a new global store instance.
+
+```typescript
+function createStore<T>(props: ConstructorProps<T>): StoreInstance<T>;
+```
+
+## Parameters
+
+| Option | Type                  | Required | Description                          |
+| :----- | :-------------------- | :------- | :----------------------------------- |
+| props  | `ConstructorProps<T>` | Yes      | Configuration options for the store. |
+
+### ConstructorProps\<T>
+
+| Option       | Type               | Required | Description                                                                 |
+| :----------- | :----------------- | :------- | :-------------------------------------------------------------------------- |
+| initialData  | `NestedPartial<T>` | No       | The initial data for the store.                                             |
+| fallbackData | `NestedPartial<T>` | No       | Fallback data used when a value is not found in the main data.              |
+| devTools     | `string`           | No       | Name for Redux DevTools integration. If provided, enables DevTools support. |
+
+## Returns
+
+`StoreInstance<T>`: A new store instance.
+
+## Description
+
+The `createStore` function creates a new global store instance that can be used throughout your application. It initializes the store with the provided initial data and configuration options.
+
+## Example
+
+```typescript
+import { createStore } from '@devlab/store';
+
+type UserStore = {
+  user: {
+    name: string;
+    age: number;
+    preferences: {
+      theme: 'light' | 'dark';
+    };
+  };
+};
+
+const userStore = createStore<UserStore>({
+  initialData: {
+    user: {
+      name: 'John Doe',
+      age: 30,
+      preferences: {
+        theme: 'light'
+      }
+    }
+  },
+  fallbackData: {
+    user: {
+      name: 'Guest',
+      age: 0,
+      preferences: {
+        theme: 'light'
+      }
+    }
+  },
+  devTools: 'User Store' // Enables Redux DevTools integration
+});
+
+// Now you can use the store methods
+userStore.set('user.name', 'Jane Doe');
+const userName = userStore.get('user.name');
+console.log(userName); // 'Jane Doe'
+
+// In a React component
+function UserProfile() {
+  const name = userStore.use('user.name');
+  const age = userStore.use('user.age');
+
+  return (
+    <div>
+      <p>Name: {name}</p>
+      <p>Age: {age}</p>
+    </div>
+  );
+}
+```
+
+This example demonstrates how to create a global store, set and get values, and use it within a React component.

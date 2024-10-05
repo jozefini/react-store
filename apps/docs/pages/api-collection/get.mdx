@@ -1,0 +1,70 @@
+## get
+
+The `get` method for the Map store allows you to retrieve a value for a specific key in the store.
+
+```typescript
+key(mapKey: string).get<P extends Paths<T>>(path?: P): PathValue<T, P>
+```
+
+## Parameters
+
+| Option | Type     | Required | Description                                                                                       |
+| :----- | :------- | :------- | :------------------------------------------------------------------------------------------------ |
+| mapKey | `string` | Yes      | The key in the Map store from which to retrieve the value.                                        |
+| path   | `string` | No       | The property path within the value. Can be nested using dot notation (e.g., 'preferences.theme'). |
+
+## Returns
+
+`PathValue<T, P>`: The value at the specified key and path.
+
+## Description
+
+The `get` method retrieves a value for a specific key in the Map store. It's accessed through the `key` method of the store. If a path is provided, it will retrieve the nested value at that path within the key's value.
+
+## Example
+
+```typescript
+import { createMapStore } from '@devlab/store';
+
+type UserData = {
+  name: string;
+  age: number;
+  preferences: {
+    theme: 'light' | 'dark';
+  };
+};
+
+const userStore = createMapStore<UserData>({
+  initialData: new Map([
+    ['user1', { name: 'John Doe', age: 30, preferences: { theme: 'light' } }]
+  ])
+});
+
+// Get the entire value for a key
+const user1Data = userStore.key('user1').get();
+console.log(user1Data); // { name: 'John Doe', age: 30, preferences: { theme: 'light' } }
+
+// Get a specific property
+const userName = userStore.key('user1').get('name');
+console.log(userName); // 'John Doe'
+
+// Get a nested property
+const userTheme = userStore.key('user1').get('preferences.theme');
+console.log(userTheme); // 'light'
+
+// Usage in a React component
+function UserProfile({ userId }: { userId: string }) {
+  const userName = userStore.key(userId).use('name');
+  const userTheme = userStore.key(userId).use('preferences.theme');
+
+  return (
+    <div>
+      <p>Name: {userName}</p>
+      <p>Theme: {userTheme}</p>
+      <button onClick={() => console.log(userStore.key(userId).get())}>
+        Log User Data
+      </button>
+    </div>
+  );
+}
+```

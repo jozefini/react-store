@@ -1,0 +1,85 @@
+## update
+
+The `update` method allows you to modify an existing value in the store at a specified path.
+
+```typescript
+update<P extends Paths<T>>(
+  path: P & string,
+  value: PathValue<T, P> | ((prev: PathValue<T, P>) => PathValue<T, P>),
+  notify: boolean = true
+): void
+```
+
+## Parameters
+
+| Option | Type                                                              | Required | Description                                                                                             |
+| :----- | :---------------------------------------------------------------- | :------- | :------------------------------------------------------------------------------------------------------ |
+| path   | `string`                                                          | Yes      | The property path in the store. Can be nested using dot notation (e.g., 'user.profile.name').           |
+| value  | `PathValue<T, P> \| ((prev: PathValue<T, P>) => PathValue<T, P>)` | Yes      | The new value to set or a function that receives the previous value and returns the new value.          |
+| notify | `boolean`                                                         | No       | Whether to trigger a re-render for components subscribed to this path in the store. Defaults to `true`. |
+
+## Returns
+
+`void`
+
+## Description
+
+The `update` method modifies an existing value in the store's state at the specified path. Unlike `set`, it will not create the property if it doesn't exist. If `notify` is true (default), it will trigger re-renders in components that are subscribed to the updated path.
+
+**Important Note:** If the property doesn't exist, `update` will not create it. Use `set` if you want to ensure the property is created.
+
+## Example
+
+```typescript
+import { createStore } from '@devlab/store';
+
+type StoreStates = {
+  user: {
+    name: string;
+    age: number;
+    preferences: {
+      theme: 'light' | 'dark';
+    };
+  };
+}
+
+// Create a store
+const store = createStore<StoreStates>({
+  initialData: {
+    user: {
+      name: 'John Doe',
+      age: 30,
+      preferences: {
+        theme: 'light'
+      }
+    }
+  }
+});
+
+// Update a simple value
+store.update('user.name', 'Jane Doe');
+
+// Update using a function
+store.update('user.age', (prevAge) => prevAge + 1);
+
+// Update a nested value
+store.update('user.preferences.theme', 'dark');
+
+// Usage in a React component
+function UserProfile() {
+  const userName = store.use('user.name');
+  const age = store.use('user.age');
+
+  return (
+    <div>
+      <p>Name: {userName}</p>
+      <p>Age: {age}</p>
+      <button onClick={() => store.update('user.age', (age) => age + 1)}>
+        Increment Age
+      </button>
+    </div>
+  );
+}
+```
+
+This example demonstrates how to use the `update` method to modify existing values in the store, including using a function to update based on the previous value.

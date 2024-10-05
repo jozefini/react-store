@@ -1,0 +1,79 @@
+## remove
+
+The `remove` method allows you to delete a property from the store at a specified path.
+
+```typescript
+remove<P extends Paths<T>>(path: P & string, notify: boolean = true): void
+```
+
+## Parameters
+
+| Option | Type      | Required | Description                                                                                             |
+| :----- | :-------- | :------- | :------------------------------------------------------------------------------------------------------ |
+| path   | `string`  | Yes      | The property path in the store to remove. Can be nested using dot notation (e.g., 'user.profile.name'). |
+| notify | `boolean` | No       | Whether to trigger a re-render for components subscribed to this path in the store. Defaults to `true`. |
+
+## Returns
+
+`void`
+
+## Description
+
+The `remove` method deletes a property from the store's state at the specified path. If `notify` is true (default), it will trigger re-renders in components that are subscribed to the removed path or its parent paths.
+
+## Example
+
+```typescript
+import { createStore } from '@devlab/store';
+
+type StoreStates = {
+  user: {
+    name: string;
+    age?: number;
+    preferences: {
+      theme: 'light' | 'dark';
+      notifications?: boolean;
+    };
+  };
+}
+
+// Create a store
+const store = createStore<StoreStates>({
+  initialData: {
+    user: {
+      name: 'John Doe',
+      age: 30,
+      preferences: {
+        theme: 'light',
+        notifications: true
+      }
+    }
+  }
+});
+
+// Remove a property
+store.remove('user.age');
+
+// Remove a nested property
+store.remove('user.preferences.notifications');
+
+// Usage in a React component
+function UserProfile() {
+  const userName = store.use('user.name');
+  const age = store.use('user.age');
+  const notifications = store.use('user.preferences.notifications');
+
+  return (
+    <div>
+      <p>Name: {userName}</p>
+      <p>Age: {age ?? 'Not specified'}</p>
+      <p>Notifications: {notifications ? 'Enabled' : 'Disabled'}</p>
+      <button onClick={() => store.remove('user.age')}>
+        Remove Age
+      </button>
+    </div>
+  );
+}
+```
+
+This example demonstrates how to use the `remove` method to delete properties from the store, including nested properties.

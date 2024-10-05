@@ -1,0 +1,67 @@
+## useSize
+
+The `useSize` method is a React hook that subscribes to changes in the size of the Map store.
+
+```typescript
+useSize(): number
+```
+
+## Parameters
+
+None
+
+## Returns
+
+`number`: The number of key-value pairs in the Map store.
+
+## Description
+
+The `useSize` method is a React hook that returns the current size of the Map store and automatically re-renders the component when the number of items in the store changes.
+
+## Example
+
+```typescript
+import React from 'react';
+import { createMapStore } from '@devlab/store';
+
+type UserData = {
+  name: string;
+  age: number;
+};
+
+const userStore = createMapStore<UserData>({
+  initialData: new Map([
+    ['user1', { name: 'John Doe', age: 30 }],
+    ['user2', { name: 'Jane Doe', age: 28 }]
+  ])
+});
+
+function UserCount() {
+  const userCount = userStore.useSize();
+
+  return (
+    <div>
+      <p>Number of users: {userCount}</p>
+      <button onClick={() => userStore.key(`user${userCount + 1}`).set({ name: 'New User', age: 25 })}>
+        Add User
+      </button>
+      <button onClick={() => {
+        const keys = userStore.getKeys();
+        if (keys.length > 0) {
+          userStore.key(keys[keys.length - 1]).remove();
+        }
+      }}>
+        Remove Last User
+      </button>
+    </div>
+  );
+}
+```
+
+This example demonstrates how to use the `useSize` hook to display and update the number of users in the store, automatically re-rendering when users are added or removed.
+
+## Notes
+
+- The `useSize` hook follows the rules of hooks and should only be used at the top level of your React function components or custom hooks.
+- The component using `useSize` will re-render whenever the number of items in the Map store changes (i.e., when items are added or removed).
+- This hook is particularly useful for displaying the current number of items in the store or for conditional rendering based on the store's size.

@@ -1,0 +1,98 @@
+## use
+
+The `use` method for the Map store allows you to subscribe to a specific key and optionally a path within that key's value in the store. It automatically re-renders the component when the subscribed value changes.
+
+```typescript
+key(mapKey: string).use<P extends Paths<T>>(path?: P): PathValue<T, P>
+```
+
+## Parameters
+
+| Option | Type     | Required | Description                                                                                       |
+| :----- | :------- | :------- | :------------------------------------------------------------------------------------------------ |
+| mapKey | `string` | Yes      | The key in the Map store to subscribe to.                                                         |
+| path   | `string` | No       | The property path within the value. Can be nested using dot notation (e.g., 'preferences.theme'). |
+
+## Returns
+
+`PathValue<T, P>`: The current value at the specified key and path.
+
+## Description
+
+The `use` method is a React hook that subscribes to changes for a specific key in the Map store, and optionally to a specific path within that key's value. It returns the current value and triggers a re-render of the component whenever the subscribed value changes. This method should only be used within React components or custom hooks.
+
+## Example
+
+```typescript
+import React from 'react';
+import { createMapStore } from '@devlab/store';
+
+type UserData = {
+  name: string;
+  age: number;
+  preferences: {
+    theme: 'light' | 'dark';
+  };
+};
+
+const userStore = createMapStore<UserData>({
+  initialData: new Map([
+    ['user1', { name: 'John Doe', age: 30, preferences: { theme: 'light' } }],
+    ['user2', { name: 'Jane Doe', age: 28, preferences: { theme: 'dark' } }]
+  ])
+});
+
+function UserProfile({ userId }: { userId: string }) {
+  // Subscribe to the entire user object
+  const userData = userStore.key(userId).use();
+
+  // Subscribe to specific properties
+  const userName = userStore.key(userId).use('name');
+  const userTheme = userStore.key(userId).use('preferences.theme');
+
+  return (
+    <div>
+      <h2>{userName}'s Profile</h2>
+      <p>Age: {userData.age}</p>
+      <p>Theme: {userTheme}</p>
+      <button onClick={() => userStore.key(userId).update('age', age => age + 1)}>
+        Increment Age
+      </button>
+      <button onClick={() => userStore.key(userId).update('preferences.theme', theme => theme === 'light' ? 'dark' : 'light')}>
+        Toggle Theme
+      </button>
+    </div>
+  );
+}
+
+function App() {
+  const userIds = userStore.useKeys();
+
+  return (
+    <div>
+      {userIds.map(userId => (
+        <UserProfile key={userId} userId={userId} />
+      ))}
+    </div>
+  );
+}
+```
+
+This example demonstrates how to use the `use` method to subscribe to various parts of the Map store, including entire objects and specific properties. The `UserProfile` component will automatically re-render when any of the subscribed values change.
+
+## Notes
+
+- The `use` method is a custom React hook and follows the rules of hooks. It should only be called at the top level of your React function components or custom hooks.
+- Each call to `use` creates a separate subscription, so you can subscribe to multiple keys and paths within the same component.
+- The component will only re-render if the value at the subscribed key and path actually changes.
+- Unlike the object store's `use` method, the Map store's `use` method requires specifying the key first using the `key` method.
+
+## Differences from Object Store
+
+The Map store's `use` method differs from the object store's `use` method in the following ways:
+
+1. It requires specifying the key first using the `key` method.
+2. It can subscribe to an entire object at a specific key without specifying a path.
+3. It's particularly useful for subscribing to specific items in a collection, where each item is identified by a unique key.
+
+These differences make the Map store's `use` method well-suited for managing and subscribing to collections of items with consistent structures.

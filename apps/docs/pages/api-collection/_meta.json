@@ -1,0 +1,16 @@
+{
+  "createMapStore": "createMapStore()",
+  "createScopedMapStore": "createScopedMapStore()",
+  "set": "set()",
+  "get": "get()",
+  "update": "update()",
+  "remove": "remove()",
+  "use": "use()",
+  "getKeys": "getKeys()",
+  "useKeys": "useKeys()",
+  "getSize": "getSize()",
+  "useSize": "useSize()",
+  "reset": "reset()",
+  "clear": "clear()",
+  "MapStoreInstance": "MapStoreInstance"
+}

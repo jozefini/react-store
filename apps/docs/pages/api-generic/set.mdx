@@ -1,0 +1,86 @@
+## set
+
+The `set` method allows you to update or create a value in the store at a specified path.
+
+```typescript
+set<P extends Paths<T>>(path: P & string, value: PathValue<T, P>, notify: boolean = true): void
+```
+
+## Parameters
+
+| Option | Type      | Required | Description                                                                                             |
+| :----- | :-------- | :------- | :------------------------------------------------------------------------------------------------------ |
+| path   | `string`  | Yes      | The property path in the store. Can be nested using dot notation (e.g., 'user.profile.name').           |
+| value  | `any`     | Yes      | The value to set at the specified path.                                                                 |
+| notify | `boolean` | No       | Whether to trigger a re-render for components subscribed to this path in the store. Defaults to `true`. |
+
+## Returns
+
+`void`
+
+## Description
+
+The `set` method updates the store's state at the specified path with the given value. If `notify` is true (default), it will trigger re-renders in components that are subscribed to the updated path.
+
+**Important Note:** The `set` method will create the property if it doesn't exist in the store. This is different from the `update` method, which will only modify existing properties.
+
+## Example
+
+```typescript
+import { createStore } from '@devlab/store';
+
+type StoreStates = {
+  user: {
+    name: string;
+    preferences: {
+      theme: 'light' | 'dark';
+    };
+    age?: number;
+  };
+  temporaryData: any;
+}
+
+// Create a store
+const store = createStore<StoreStates>({
+  initialData: {
+    user: {
+      name: '',
+      preferences: {
+        theme: 'light'
+      }
+    }
+  }
+});
+
+// Set a simple value
+store.set('user.name', 'John Doe');
+
+// Set a nested value
+store.set('user.preferences.theme', 'dark');
+
+// Set a new property that didn't exist before
+store.set('user.age', 30);
+
+// Set a value without notifying subscribers
+store.set('temporaryData', someData, false);
+
+// Usage in a React component
+function UserProfile() {
+  const userName = store.use('user.name');
+  const theme = store.use('user.preferences.theme');
+  const age = store.use('user.age');
+
+  return (
+    <div>
+      <p>Name: {userName}</p>
+      <p>Age: {age}</p>
+      <p>Theme: {theme}</p>
+      <button onClick={() => store.set('user.name', 'Jane Doe')}>
+        Change Name
+      </button>
+    </div>
+  );
+}
+```
+
+This example demonstrates how to use the `set` method to update both existing and new values in the store, as well as how to use it within a React component.

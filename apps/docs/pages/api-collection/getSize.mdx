@@ -1,0 +1,53 @@
+## getSize
+
+The `getSize` method returns the number of key-value pairs in the Map store.
+
+```typescript
+getSize(): number
+```
+
+## Parameters
+
+None
+
+## Returns
+
+`number`: The number of key-value pairs in the Map store.
+
+## Description
+
+The `getSize` method retrieves the current size of the Map store, which represents the number of key-value pairs it contains.
+
+## Example
+
+```typescript
+import { createMapStore } from '@devlab/store';
+
+type UserData = {
+  name: string;
+  age: number;
+};
+
+const userStore = createMapStore<UserData>({
+  initialData: new Map([
+    ['user1', { name: 'John Doe', age: 30 }],
+    ['user2', { name: 'Jane Doe', age: 28 }]
+  ])
+});
+
+console.log(userStore.getSize()); // 2
+
+userStore.key('user3').set({ name: 'Alice Smith', age: 35 });
+console.log(userStore.getSize()); // 3
+
+userStore.key('user2').remove();
+console.log(userStore.getSize()); // 2
+```
+
+This example demonstrates how to use the `getSize` method to get the current number of items in the Map store, and how it changes as items are added or removed.
+
+## Notes
+
+- Unlike `useSize`, `getSize` is not a React hook and does not trigger re-renders when the size changes.
+- `getSize` is useful for getting the current size of the store in non-reactive contexts or when you need to know the size without setting up a subscription.
+- For reactive components that need to re-render when the size changes, use the `useSize` hook instead.
