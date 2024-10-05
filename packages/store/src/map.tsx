@@ -484,7 +484,7 @@ class CreateMapStore<T> {
 // =====================
 // Instance Type
 // =====================
-export type MapStoreInstance<T> = CreateMapStore<T>;
+export type MapStore<T> = CreateMapStore<T>;
 
 // =====================
 // Global Store

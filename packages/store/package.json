@@ -1,7 +1,7 @@
 {
   "name": "@devlab/store",
   "license": "MIT",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "exports": {
     "./package.json": "./package.json",
     ".": {

@@ -371,7 +371,7 @@ class CreateStore<T> {
 // =====================
 // Instance Type
 // =====================
-export type StoreInstance<T> = CreateStore<T>;
+export type Store<T> = CreateStore<T>;
 
 // =====================
 // Global Store
