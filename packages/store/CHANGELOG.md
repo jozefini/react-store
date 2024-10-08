@@ -1,5 +1,11 @@
 # @devlab/store
 
+## 3.0.3
+
+### Patch Changes
+
+- fix tsconfig
+
 ## 3.0.2
 
 ### Patch Changes
