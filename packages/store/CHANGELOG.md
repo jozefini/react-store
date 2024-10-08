@@ -1,5 +1,11 @@
 # @devlab/store
 
+## 3.0.1
+
+### Patch Changes
+
+- Fix re-render issue on updated nested tree
+
 ## 3.0.0
 
 ### Major Changes

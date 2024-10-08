@@ -295,6 +295,7 @@ class CreateStore<T> {
 
     this.sendToDevTools('SET', path, value);
     if (notify) {
+      this._data = deepClone(this._data);
       this.notifyNestedSubscribers(path);
       this.notifyDependencies(path);
     }
@@ -320,6 +321,7 @@ class CreateStore<T> {
 
     this.sendToDevTools('UPDATE', path, value);
     if (notify) {
+      this._data = deepClone(this._data);
       this.notifyNestedSubscribers(path);
       this.notifyDependencies(path);
     }
@@ -335,6 +337,7 @@ class CreateStore<T> {
 
     this.sendToDevTools('REMOVE', path);
     if (notify) {
+      this._data = deepClone(this._data);
       this.notifyNestedSubscribers(path);
       this.notifyDependencies(path);
     }
@@ -345,6 +348,7 @@ class CreateStore<T> {
 
     this.sendToDevTools('RESET', '');
     if (notify) {
+      this._data = deepClone(this._data);
       this.subscribers.forEach((_, path) => {
         this.notifySubscribers(path);
       });
@@ -386,6 +390,7 @@ export function createStore<T>(props: CreateStoreProps<T>) {
 export function createScopedStore<T>(props: CreateStoreProps<T>) {
   const StoreContext = createContext<CreateStore<T> | null>(null);
   const Provider: FC<{ children: React.ReactNode }> = ({ children }) => {
+    // biome-ignore lint: ignore
     const store = useMemo(() => new CreateStore<T>(props), []);
     return (
       <StoreContext.Provider value={store}>{children}</StoreContext.Provider>

@@ -430,6 +430,7 @@ class CreateMapStore<T> {
       parentProp[currentKey]
     );
     if (notify) {
+      this.data.set(mapKey, deepClone(this.data.get(mapKey)) as T);
       this.notifyNestedSubscribers(fullPath);
       this.notifyDependencies(fullPath);
     }
@@ -496,6 +497,7 @@ export function createMapStore<T>(props: CreateMapStoreProps<T>) {
 export function createScopedMapStore<T>(props: CreateMapStoreProps<T>) {
   const StoreContext = createContext<CreateMapStore<T> | null>(null);
   const Provider: FC<{ children: React.ReactNode }> = ({ children }) => {
+    // biome-ignore lint: ignore
     const store = useMemo(() => new CreateMapStore<T>(props), []);
     return (
       <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
