@@ -1,5 +1,11 @@
 # @devlab/store
 
+## 3.0.4
+
+### Patch Changes
+
+- Fix return type when empty path
+
 ## 3.0.3
 
 ### Patch Changes

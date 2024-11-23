@@ -292,7 +292,9 @@ class CreateMapStore<T> {
 
   key(mapKey: string) {
     return {
-      get: <P extends Paths<T>>(path?: P): PathValue<T, P> => {
+      get: <P extends Paths<T> | undefined = undefined>(
+        path?: P
+      ): P extends Paths<T> ? PathValue<T, P> : T => {
         return this.get(mapKey, path);
       },
       set: (value: T, notify = true): void => {
@@ -305,7 +307,9 @@ class CreateMapStore<T> {
       ): void => {
         this.update(mapKey, path, value, notify);
       },
-      use: <P extends Paths<T>>(path?: P): PathValue<T, P> => {
+      use: <P extends Paths<T> | undefined = undefined>(
+        path?: P
+      ): P extends Paths<T> ? PathValue<T, P> : T => {
         return this.use(mapKey, path);
       },
       remove: (notify = true): void => {
@@ -368,18 +372,23 @@ class CreateMapStore<T> {
     }
   }
 
-  private get<P extends Paths<T>>(mapKey: string, path?: P): PathValue<T, P> {
+  private get<P extends Paths<T> | undefined = undefined>(
+    mapKey: string,
+    path?: P
+  ): P extends Paths<T> ? PathValue<T, P> : T {
     const fullPath = this.getFullPath(mapKey, path);
     const { currentKey } = this.getCachedPath(fullPath);
     const { fallbackProp, parentProp } = this.getCachedProperty(fullPath);
     const originalValue = currentKey
       ? parentProp?.[currentKey]
-      : (parentProp as PathValue<T, P>);
+      : (parentProp as P extends Paths<T> ? PathValue<T, P> : T);
 
     if (originalValue !== undefined) {
       return originalValue;
     }
-    return fallbackProp?.[currentKey] as PathValue<T, P>;
+    return fallbackProp?.[currentKey] as P extends Paths<T>
+      ? PathValue<T, P>
+      : T;
   }
 
   private set(mapKey: string, value: T, notify = true): void {
@@ -450,7 +459,10 @@ class CreateMapStore<T> {
     }
   }
 
-  private use<P extends Paths<T>>(mapKey: string, path?: P): PathValue<T, P> {
+  private use<P extends Paths<T> | undefined = undefined>(
+    mapKey: string,
+    path?: P
+  ): P extends Paths<T> ? PathValue<T, P> : T {
     const subscribe = useCallback(
       (callback: () => void) => {
         const fullPath = this.getFullPath(mapKey, path);
