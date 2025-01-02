@@ -1,5 +1,11 @@
 # @devlab/store
 
+## 1.0.1
+
+### Patch Changes
+
+- Add support for async actions
+
 ## 3.0.4
 
 ### Patch Changes
