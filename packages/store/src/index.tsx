@@ -1,2 +1,10 @@
-export { type Store, createScopedStore, createStore } from './object';
-export { type MapStore, createScopedMapStore, createMapStore } from './map';
+export {
+  type CreateStore,
+  createScopedStore,
+  createStore,
+} from './store'
+export {
+  type CreateCollection,
+  createCollection,
+  createScopedCollection,
+} from './collection'
