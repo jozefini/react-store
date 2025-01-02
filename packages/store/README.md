@@ -1,1 +1,1 @@
-## @devlab/store
+## FinalStore

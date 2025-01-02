@@ -16,7 +16,10 @@ import {
 type CreateStoreProps<States, Actions extends Record<string, unknown>> = {
   states: States;
   actions: {
-    [K in keyof Actions]: (state: States, payload: Actions[K]) => void;
+    [K in keyof Actions]: (
+      state: States,
+      payload: Actions[K]
+    ) => void | Promise<void>;
   };
 };
 export type CreateStore<States, Actions extends Record<string, unknown>> = {
@@ -183,13 +186,19 @@ export function createStore<States, Actions extends Record<string, unknown>>(
     return selector(getState());
   }
 
-  function dispatch<K extends keyof Actions>(
+  async function dispatch<K extends keyof Actions>(
     type: K,
     payload: Actions[K],
     shouldNotify = true
-  ): void {
+  ): Promise<void> {
     const newState = { ...states };
-    actions[type](newState, payload);
+    const result = actions[type](newState, payload);
+
+    // Handle async actions
+    if (result instanceof Promise) {
+      await result;
+    }
+
     states = newState;
 
     if (shouldNotify) {
