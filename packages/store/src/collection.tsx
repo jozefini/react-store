@@ -46,13 +46,13 @@ export type CreateCollection<
   clear: () => void;
   reset: () => void;
   use: {
-    (key: string): States;
+    (key: string): States | undefined;
     <T>(key: string, selector: (state: States) => T): T;
   };
   useSize: () => number;
   useKeys: () => string[];
   get: {
-    (key: string): States;
+    (key: string): States | undefined;
     <T>(key: string, selector: (state: States) => T): T;
   };
   getSize: () => number;
