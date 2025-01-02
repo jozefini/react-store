@@ -46,14 +46,14 @@ export type CreateCollection<
   clear: () => void;
   reset: () => void;
   use: {
-    (key: string): States | undefined;
-    <T>(key: string, selector: (state: States) => T): T | undefined;
+    (key: string): States;
+    <T>(key: string, selector: (state: States) => T): T;
   };
   useSize: () => number;
   useKeys: () => string[];
   get: {
-    (key: string): States | undefined;
-    <T>(key: string, selector: (state: States) => T): T | undefined;
+    (key: string): States;
+    <T>(key: string, selector: (state: States) => T): T;
   };
   getSize: () => number;
   getKeys: () => string[];
@@ -253,11 +253,8 @@ export function createCollection<
   // =====================
 
   function use(key: string): States | undefined;
-  function use<T>(key: string, selector: (state: States) => T): T | undefined;
-  function use<T>(
-    key: string,
-    selector?: (state: States) => T
-  ): States | T | undefined {
+  function use<T>(key: string, selector: (state: States) => T): T;
+  function use<T>(key: string, selector?: (state: States) => T): States | T {
     const stateRef = useRef(states.get(key));
     const selectorRef = useRef(selector);
     const valueRef = useRef<T | States | undefined>(
@@ -298,7 +295,9 @@ export function createCollection<
       return valueRef.current;
     }, [key]);
 
-    return useSyncExternalStore(subscribeFn, getSnapshot, getSnapshot);
+    return useSyncExternalStore(subscribeFn, getSnapshot, getSnapshot) as
+      | T
+      | States;
   }
 
   function useSize() {
@@ -324,13 +323,10 @@ export function createCollection<
   }
 
   function get(key: string): States | undefined;
-  function get<T>(key: string, selector: (state: States) => T): T | undefined;
-  function get<T>(
-    key: string,
-    selector?: (state: States) => T
-  ): States | T | undefined {
+  function get<T>(key: string, selector: (state: States) => T): T;
+  function get<T>(key: string, selector?: (state: States) => T): States | T {
     const state = states.get(key);
-    if (!state) return undefined;
+    if (!state) return undefined as States;
     if (!selector) return state;
     return selector(state);
   }

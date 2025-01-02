@@ -1,5 +1,11 @@
 # @devlab/store
 
+## 1.0.3
+
+### Patch Changes
+
+- Solve type of undefined
+
 ## 1.0.2
 
 ### Patch Changes
