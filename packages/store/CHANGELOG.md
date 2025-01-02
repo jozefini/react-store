@@ -1,5 +1,11 @@
 # @devlab/store
 
+## 1.0.2
+
+### Patch Changes
+
+- Add support for async actions in collection store
+
 ## 1.0.1
 
 ### Patch Changes

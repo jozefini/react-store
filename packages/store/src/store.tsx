@@ -191,8 +191,11 @@ export function createStore<States, Actions extends Record<string, unknown>>(
     payload: Actions[K],
     shouldNotify = true
   ): Promise<void> {
+    const cb = actions[type];
+    if (typeof cb !== 'function') return;
+
     const newState = { ...states };
-    const result = actions[type](newState, payload);
+    const result = cb(newState, payload);
 
     // Handle async actions
     if (result instanceof Promise) {

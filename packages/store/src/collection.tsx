@@ -17,7 +17,10 @@ import { isDeepEqual } from './store';
 
 type CreateCollectionProps<States, Actions extends Record<string, unknown>> = {
   actions: {
-    [K in keyof Actions]: (state: States, payload: Actions[K]) => void;
+    [K in keyof Actions]: (
+      state: States,
+      payload: Actions[K]
+    ) => void | Promise<void>;
   };
   initialMap?: Map<string, States>;
 };
@@ -42,17 +45,23 @@ export type CreateCollection<
   remove: (key: string) => void;
   clear: () => void;
   reset: () => void;
-  use: (key: string) => States | undefined;
+  use: {
+    (key: string): States | undefined;
+    <T>(key: string, selector: (state: States) => T): T | undefined;
+  };
   useSize: () => number;
   useKeys: () => string[];
-  get: (key: string) => States | undefined;
+  get: {
+    (key: string): States | undefined;
+    <T>(key: string, selector: (state: States) => T): T | undefined;
+  };
   getSize: () => number;
   getKeys: () => string[];
   dispatch: <K extends keyof Actions>(
     key: string,
     type: K,
     payload: Actions[K]
-  ) => void;
+  ) => Promise<void>;
 };
 
 // =====================
@@ -334,18 +343,30 @@ export function createCollection<
     return Array.from(states.keys());
   }
 
-  function dispatch<K extends keyof Actions>(
+  async function dispatch<K extends keyof Actions>(
     key: string,
     type: K,
-    payload: Actions[K]
-  ): void {
+    payload: Actions[K],
+    shouldNotify = true
+  ): Promise<void> {
     const state = states.get(key);
     if (!state) return;
+    const cb = actions[type];
+    if (typeof cb !== 'function') return;
 
     const newState = { ...state };
-    actions[type](newState, payload);
+    const result = cb(newState, payload);
+
+    // Handle async actions
+    if (result instanceof Promise) {
+      await result;
+    }
+
     states.set(key, newState);
-    notifyKeySubscribers(key);
+
+    if (shouldNotify) {
+      notifyKeySubscribers(key);
+    }
   }
 
   return {
