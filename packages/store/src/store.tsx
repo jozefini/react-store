@@ -170,7 +170,7 @@ export function createStore<States, Actions extends Record<string, unknown>>(
         valueRef.current = selector ? selector(currentState) : currentState;
       }
 
-      return valueRef.current as T | States;
+      return valueRef.current;
     }, [selector]);
 
     return useSyncExternalStore(subscribeFn, getSnapshot, getSnapshot);
@@ -186,7 +186,7 @@ export function createStore<States, Actions extends Record<string, unknown>>(
   function dispatch<K extends keyof Actions>(
     type: K,
     payload: Actions[K],
-    shouldNotify: boolean = true
+    shouldNotify = true
   ): void {
     const newState = { ...states };
     actions[type](newState, payload);
@@ -230,7 +230,6 @@ export function createScopedStore<
       return () => {
         store.reset();
       };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
       <StoreContext.Provider value={store}>{children}</StoreContext.Provider>

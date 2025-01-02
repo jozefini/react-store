@@ -34,7 +34,10 @@ type CollectionSubscribers<States> = {
   keys: Map<number, Subscriber<string[]>>;
 };
 
-export type CreateCollection<States, Actions extends Record<string, unknown>> = {
+export type CreateCollection<
+  States,
+  Actions extends Record<string, unknown>
+> = {
   insert: (key: string, state: States) => void;
   remove: (key: string) => void;
   clear: () => void;
@@ -283,7 +286,7 @@ export function createCollection<
             : currentState;
       }
 
-      return valueRef.current as T | States | undefined;
+      return valueRef.current;
     }, [key]);
 
     return useSyncExternalStore(subscribeFn, getSnapshot, getSnapshot);
@@ -377,7 +380,6 @@ export function createScopedCollection<
       return () => {
         store.reset();
       };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
       <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
